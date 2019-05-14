@@ -1,0 +1,10 @@
+# generated files
+bin/
+build/
+*.iml
+
+# cache file
+__pycache__/
+
+# Pycharm entries
+.idea/
