@@ -37,7 +37,11 @@ def output(info_type=0, class_name=None, method_name=None, info=None):
                   Type: String
     """
 
-    string = "[" + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())) + "] " + class_name + " -> " + method_name + " : " + info
+    if class_name == "" or method_name == "":
+        string = "[" + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())) + "] " + info
+    else:
+        string = "[" + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())) + "] " + class_name + " -> " + method_name + " : " + info
+
     if info_type == NORMAL:
         # Print normal
         print(string)

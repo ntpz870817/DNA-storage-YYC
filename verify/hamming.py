@@ -71,7 +71,7 @@ def add_code(binary_list):
 def remove_code(binary_list):
 
     log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
-               "Add hamming code to a line list.")
+               "Remove hamming code to a line list.")
 
     new_binary_list = []
     index = 0

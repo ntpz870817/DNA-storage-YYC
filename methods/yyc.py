@@ -19,6 +19,7 @@ import math
 import sys
 
 import utils.log as log
+import utils.monitor as monitor
 
 
 # noinspection PyUnresolvedReferences,PyMethodMayBeStatic,PyUnusedLocal,PyProtectedMember,PyBroadException
@@ -79,6 +80,8 @@ class YYC:
         self.max_ratio = max_ratio
         self.index_binary_length = 0
         self.file_size = 0
+
+        self.monitor = monitor.Monitor()
 
     def init_check(self, support_bases, support_spacing, base_reference, current_code_matrix, max_ratio):
         """
@@ -167,24 +170,28 @@ class YYC:
                              Type: list.
         """
 
+        self.monitor.restore()
+
         self.file_size = file_size
 
         log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
                    "Obtain the binary length of index.")
-        self.index_binary_length = int(len(str(bin(len(matrix)))) - 1)
+        self.index_binary_length = int(len(str(bin(len(matrix)))) - 2)
 
         log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
                    "Separate good data from bad data.")
         good_datas, bad_datas = self.__divide_library__(matrix)
-
         log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
                    "Random pairing and friendly testing.")
         datas = self.__pairing__(good_datas, bad_datas)
 
         log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
                    "Convert to DNA motif string set.")
-
         dna_motifs = self.__synthesis_motifs__(datas)
+
+        self.monitor.restore()
+
+        print("encode dna motifs length = " + str(len(dna_motifs)))
 
         return dna_motifs
 
@@ -200,6 +207,8 @@ class YYC:
                                         Type: list
         """
 
+        print("decode matrix length = " + str(len(matrix)))
+
         bad_indexs = []
         for row in range(len(matrix)):
             if numpy.sum(matrix[row]) > len(matrix[row]) * self.max_ratio or numpy.sum(matrix[row]) < len(matrix[row]) * (1 - self.max_ratio):
@@ -213,27 +222,26 @@ class YYC:
         if len(bad_indexs) == 0 and len(matrix) == 0:
             return None, None
         elif len(bad_indexs) == 0:
-            good_datas = numpy.zeros((len(matrix) - len(bad_indexs), self.index_binary_length + len(matrix[0]))).tolist()
+            good_datas = []
             for row in range(len(good_datas)):
-                good_datas[row] = self.__splice_index_data__(row, matrix[row])
+                self.monitor.print(row, len(good_datas), 1 / 3)
+                good_datas.append(self.__splice_index_data__(row, matrix[row]))
             return good_datas, None
         elif len(bad_indexs) == len(matrix):
-            bad_datas = numpy.zeros((len(bad_indexs), self.index_binary_length + len(matrix[0]))).tolist()
+            bad_datas = []
             for row in range(len(bad_datas)):
-                bad_datas[row] = self.__splice_index_data__(row, matrix[row])
+                self.monitor.print(row, len(bad_datas), 1 / 3)
+                bad_datas.append(self.__splice_index_data__(row, matrix[row]))
             return None, bad_datas
         else:
-            good_datas = numpy.zeros((len(matrix) - len(bad_indexs), self.index_binary_length + len(matrix[0]))).tolist()
-            bad_datas = numpy.zeros((len(bad_indexs), self.index_binary_length + len(matrix[0]))).tolist()
-            good_position = 0
-            bad_position = 0
+            good_datas = []
+            bad_datas = []
             for row in range(len(matrix)):
+                self.monitor.print(row, len(matrix), 1 / 3)
                 if row in bad_indexs:
-                    bad_datas[bad_position] = self.__splice_index_data__(row, matrix[row])
-                    bad_position += 1
+                    bad_datas.append(self.__splice_index_data__(row, matrix[row]))
                 else:
-                    good_datas[good_position] = self.__splice_index_data__(row, matrix[row])
-                    good_position += 1
+                    good_datas.append(self.__splice_index_data__(row, matrix[row]))
 
             return good_datas, bad_datas
 
@@ -252,43 +260,43 @@ class YYC:
                          Type: Two-dimensional list(int)
         """
 
-        datas = None
+        datas = []
         good_indexs = None
         bad_indexs = None
         if good_datas is not None and bad_datas is not None:
-            datas = numpy.zeros((len(good_datas) + len(bad_datas), len(good_datas[0])))
             good_indexs = set(str(i) for i in range(len(good_datas)))
             bad_indexs = set(str(i) for i in range(len(bad_datas)))
         elif good_datas is None and bad_datas is not None:
-            datas = numpy.zeros((len(bad_datas), len(bad_datas[0])))
             good_indexs = set(str(i) for i in range(0))
             bad_indexs = set(str(i) for i in range(len(bad_datas)))
         elif good_datas is not None and bad_datas is None:
-            datas = numpy.zeros((len(good_datas), len(good_datas[0])))
             good_indexs = set(str(i) for i in range(len(good_datas)))
             bad_indexs = set(str(i) for i in range(0))
         else:
             log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
                        "YYC did not receive matrix data!")
 
-        for index in range(0, len(datas), 2):
-            if index < len(datas) - 1:
+        for index in range(0, len(good_datas) + len(bad_datas), 2):
+            self.monitor.print(index, len(good_datas) + len(bad_datas), 2 / 3)
+            if index < len(good_datas) + len(bad_datas) - 1:
                 if len(good_indexs) != 0 and len(bad_indexs) != 0:
-                    datas[index] = good_datas[int(good_indexs.pop())]
-                    datas[index + 1] = bad_datas[int(bad_indexs.pop())]
+                    datas.append(good_datas[int(good_indexs.pop())])
+                    datas.append(bad_datas[int(bad_indexs.pop())])
                 elif len(bad_indexs) == 0:
-                    datas[index] = good_datas[int(good_indexs.pop())]
-                    datas[index + 1] = good_datas[int(good_indexs.pop())]
+                    datas.append(good_datas[int(good_indexs.pop())])
+                    datas.append(good_datas[int(good_indexs.pop())])
                 elif len(good_indexs) == 0:
-                    datas[index] = bad_datas[int(bad_indexs.pop())]
-                    datas[index + 1] = bad_datas[int(bad_indexs.pop())]
+                    datas.append(bad_datas[int(bad_indexs.pop())])
+                    datas.append(bad_datas[int(bad_indexs.pop())])
                 else:
                     log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
                                "Pairing wrong in YYC pairing!")
             else:
-                datas[index] = good_datas[int(good_indexs.pop())] if len(good_indexs) != 0 else bad_datas[int(bad_indexs.pop())]
+                datas.append(good_datas[int(good_indexs.pop())] if len(good_indexs) != 0 else bad_datas[int(bad_indexs.pop())])
 
-        return datas.tolist()
+        del good_indexs, good_datas, bad_indexs, bad_datas
+
+        return datas
 
     def __synthesis_motifs__(self, datas):
         """
@@ -303,6 +311,7 @@ class YYC:
 
         dna_motifs = []
         for row in range(0, len(datas), 2):
+            self.monitor.print(row, len(datas), 3 / 3)
             dna_motif = []
             for col in range(len(datas[row])):
                 if row < len(datas) - 1:
@@ -321,6 +330,8 @@ class YYC:
                                                                  self.support_bases[col]))
             dna_motifs.append(dna_motif)
 
+        del datas
+
         return dna_motifs
 
     def __splice_index_data__(self, index, data):
@@ -337,7 +348,7 @@ class YYC:
                              Type: One-dimensional list.
         """
 
-        binary_indexs = [0 for index in range(self.index_binary_length)]
+        binary_indexs = [0 for col in range(self.index_binary_length)]
         position = self.index_binary_length - 1
 
         while index > 0:
@@ -346,6 +357,8 @@ class YYC:
             position -= 1
 
         mixed_data = binary_indexs + data
+
+        del index, data
 
         return mixed_data
 
@@ -389,6 +402,8 @@ class YYC:
                          Type: Two-dimensional list(int).
         """
 
+        self.monitor.restore()
+
         if not dna_motifs:
             log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
                        "DNA motif string set is None")
@@ -404,6 +419,8 @@ class YYC:
         log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
                    "Restore the disrupted data order.")
         matrix = self.__sort_order__(indexs, datas)
+
+        self.monitor.restore()
 
         return matrix
 
@@ -422,9 +439,12 @@ class YYC:
         matrix = []
 
         for row in range(len(dna_motifs)):
+            self.monitor.print(row, len(dna_motifs), 1 / 3)
             upper_row_datas, lower_row_datas = self.__dna_motif_to_binaries__(dna_motifs[row])
             matrix.append(upper_row_datas)
             matrix.append(lower_row_datas)
+
+        del dna_motifs
 
         return matrix
 
@@ -443,10 +463,15 @@ class YYC:
         datas = []
 
         for row in range(len(matrix)):
+            self.monitor.print(row, len(matrix), 2 / 3)
             # Convert binary index to decimal.
             index = 0
             for index_col in range(self.index_binary_length):
                 index += matrix[row][index_col] * int(math.pow(2, self.index_binary_length - (index_col + 1)))
+
+            if index > len(matrix):
+                log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
+                           "The index " + str(index) + " is wrong! It is bigger than the length of matrix (" + str(len(matrix)) + ").")
 
             indexs.append(index)
             datas.append(matrix[row][self.index_binary_length:])
@@ -467,14 +492,14 @@ class YYC:
                           Type: Two-dimensional list(int).
         """
 
-        matrix = []
+        matrix = [[0 for col in range(len(datas[0]))] for row in range(len(indexs))]
 
         for row in range(len(indexs)):
-            try:
-                matrix.append(datas[indexs.index(row)])
-            except Exception:
-                log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
-                           "The index (" + row + ") of data is None!")
+            self.monitor.print(row, len(indexs), 3 / 3)
+            matrix[indexs[row]] = datas[row]
+
+        del indexs, datas
+
         return matrix
 
     def __dna_motif_to_binaries__(self, dna_motif):

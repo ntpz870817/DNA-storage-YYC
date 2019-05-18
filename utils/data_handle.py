@@ -15,7 +15,9 @@ import numpy
 import struct
 import math
 import sys
+
 import utils.log as log
+import utils.monitor as monitor
 
 
 # noinspection PyUnresolvedReferences,PyBroadException,PyProtectedMember
@@ -33,6 +35,7 @@ def read_binary_from_all(interval=120):
                   Type: int
     """
 
+    m = monitor.Monitor()
     try:
         # Search file path by GUI to read
         tkinter = tk.Tk()
@@ -53,6 +56,7 @@ def read_binary_from_all(interval=120):
             row = 0
             col = 0
             for byte_index in range(size):
+                m.print(byte_index, size, 1 / 1)
                 # Read a file as bytes
                 one_byte = file.read(1)
                 element = int(struct.unpack("B", one_byte)[0])
@@ -88,6 +92,7 @@ def write_all_from_binary(matrix, size):
                   Type: int
 
     """
+    m = monitor.Monitor()
 
     try:
 
@@ -104,6 +109,7 @@ def write_all_from_binary(matrix, size):
             bit_index = 0
             temp_byte = 0
             for row in range(len(matrix)):
+                m.print(row, len(matrix), 1 / 1)
                 for col in range(len(matrix[0])):
                     bit_index += 1
                     temp_byte *= 2
@@ -128,6 +134,8 @@ def read_dna_file():
                          Type: one-dimensional list(string)
     """
 
+    m = monitor.Monitor()
+
     dna_motifs = []
 
     try:
@@ -141,10 +149,12 @@ def read_dna_file():
                        "Read DNA motifs from file: " + path)
 
             # Read current file by line
-            line = file.readline()
-            while line:
+            lines = file.readlines()
+            for index in range(len(lines)):
+                m.print(index, len(lines), 1 / 1)
+                line = lines[index]
                 dna_motifs.append([line[col] for col in range(len(line) - 1)])
-                line = file.readline()
+
         return dna_motifs
     except Exception:
         log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
@@ -160,6 +170,8 @@ def write_dna_file(dna_motifs):
                         Type: one-dimensional list(string)
     """
 
+    m = monitor.Monitor()
+
     try:
         tkinter = tk.Tk()
         tkinter.withdraw()
@@ -168,6 +180,7 @@ def write_dna_file(dna_motifs):
             log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
                        "Write DNA motifs to file: " + path)
             for row in range(len(dna_motifs)):
+                m.print(row, len(dna_motifs), 1 / 1)
                 file.write("".join(dna_motifs[row]) + "\n")
         return dna_motifs
     except Exception:
