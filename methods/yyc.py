@@ -172,9 +172,6 @@ class YYC(abs_method.abs_method):
         """
 
         self.file_size = file_size
-        self.monitor.restore()
-        log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
-                   "Obtain the binary length of index.")
         self.index_binary_length = int(len(str(bin(len(matrix)))) - 2)
 
         self.monitor.restore()

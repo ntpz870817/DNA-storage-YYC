@@ -21,7 +21,7 @@ import utils.monitor as monitor
 
 
 # noinspection PyUnresolvedReferences,PyBroadException,PyProtectedMember
-def read_binary_from_all(interval=120):
+def read_binary_from_all(path=None, interval=120):
     """
     introduction: Writing DNA motif set from documents.
 
@@ -38,9 +38,9 @@ def read_binary_from_all(interval=120):
     m = monitor.Monitor()
     try:
         # Search file path by GUI to read
-        tkinter = tk.Tk()
-        tkinter.withdraw()
-        path = filedialog.askopenfilename()
+        # tkinter = tk.Tk()
+        # tkinter.withdraw()
+        # path = filedialog.askopenfilename()
 
         # Open selected file
         with open(path, mode='rb') as file:
@@ -81,7 +81,7 @@ def read_binary_from_all(interval=120):
 
 
 # noinspection PyBroadException,PyProtectedMember
-def write_all_from_binary(matrix, size):
+def write_all_from_binary(path, matrix, size):
     """
     introduction: Writing binary matrix to document.
 
@@ -97,9 +97,9 @@ def write_all_from_binary(matrix, size):
     try:
 
         # search file path by GUI to save
-        tkinter = tk.Tk()
-        tkinter.withdraw()
-        path = filedialog.asksaveasfilename()
+        # tkinter = tk.Tk()
+        # tkinter.withdraw()
+        # path = filedialog.asksaveasfilename()
 
         with open(path, 'wb+') as file:
             log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
@@ -126,10 +126,11 @@ def write_all_from_binary(matrix, size):
 
 
 # noinspection PyBroadException,PyProtectedMember
-def read_dna_file():
+def read_dna_file(path):
     """
     introduction: Reading DNA motif set from documents.
 
+    :param path:
     :return dna_motifs: A corresponding DNA sequence string in which each row acts as a sequence.
                          Type: one-dimensional list(string)
     """
@@ -140,9 +141,9 @@ def read_dna_file():
 
     try:
         # Search file path by GUI to save
-        tkinter = tk.Tk()
-        tkinter.withdraw()
-        path = filedialog.askopenfilename()
+        # tkinter = tk.Tk()
+        # tkinter.withdraw()
+        # path = filedialog.askopenfilename()
 
         with open(path, 'r') as file:
             log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
@@ -162,7 +163,7 @@ def read_dna_file():
 
 
 # noinspection PyProtectedMember,PyBroadException
-def write_dna_file(dna_motifs):
+def write_dna_file(path, dna_motifs):
     """
     introduction: Writing DNA motif set to documents.
 
@@ -173,9 +174,9 @@ def write_dna_file(dna_motifs):
     m = monitor.Monitor()
 
     try:
-        tkinter = tk.Tk()
-        tkinter.withdraw()
-        path = filedialog.asksaveasfilename()
+        # tkinter = tk.Tk()
+        # tkinter.withdraw()
+        # path = filedialog.asksaveasfilename()
         with open(path, 'w') as file:
             log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
                        "Write DNA motifs to file: " + path)
