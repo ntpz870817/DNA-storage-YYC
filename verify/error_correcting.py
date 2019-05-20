@@ -12,47 +12,20 @@ Function(s): (1) Add error correcting.
 
 """
 
-import verify.hamming as hamming
+import abc
 
 
-def add_code(method_name="hamming", matrix=None):
+# noinspection PyMethodMayBeStatic,PyPep8Naming
+class error_correcting(metaclass=abc.ABCMeta):
 
-    new_matrix = []
+    def add(self, matrix):
+        raise Exception("Subclass must override this method")
 
-    if method_name == "hamming":
-        for row in range(len(matrix)):
-            new_matrix.append(hamming.add_code(matrix[row]))
+    def remove(self, matrix):
+        raise Exception("Subclass must override this method")
 
-    return new_matrix
+    def check(self, matrix):
+        raise Exception("Subclass must override this method")
 
-
-def remove_code(method_name="hamming", matrix=None):
-
-    new_matrix = []
-
-    if method_name == "hamming":
-        for row in range(len(matrix)):
-            new_matrix.append(hamming.remove_code(matrix[row]))
-
-    return new_matrix
-
-
-def check(method_name="hamming", matrix=None):
-    check_result = []
-
-    if method_name == "hamming":
-        for row in range(len(matrix)):
-            check_result.append(hamming.check(matrix[row]))
-
-    return check_result
-
-
-def repair(method_name="hamming", matrix=None):
-
-    new_matrix = []
-
-    if method_name == "hamming":
-        for row in range(len(matrix)):
-            new_matrix.append(hamming.repair(matrix[row]))
-
-    return new_matrix
+    def repair(self, matrix):
+        raise Exception("Subclass must override this method")

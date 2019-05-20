@@ -1,6 +1,3 @@
-import utils.log as log
-
-
 class Monitor:
     def __init__(self):
         self.position = -1
@@ -8,15 +5,17 @@ class Monitor:
     def restore(self):
         self.position = -1
 
-    def print(self, current_length, total_length, step_proportion):
-        position = int(current_length / total_length * step_proportion * 100)
+    def print(self, current_length, total_length):
+        position = int(current_length / total_length * 100)
 
         if self.position < position:
             self.position = position
             string = ""
             for index in range(100):
-                if position > index:
+                if position + 1 > index:
                     string += "|"
                 else:
                     string += " "
-            log.output(log.NORMAL, "", "", string + str(position + 1) + "%.")
+            print("\r" + string + str(position + 1) + "%", end=" ")
+            if self.position + 1 >= 100:
+                print()

@@ -5,7 +5,7 @@ Coder: HaoLing ZHANG (BGI-Research)[V1]
 
 Current Version: 1
 
-Function(s): (1) DNA encoding by DDYYC
+Function(s): (1) DNA encoding by DDYYC.
              (2) DNA decoding by DDYYC.
 
 Advantages: (1) high compressibility, maximum compressibility to 1/2 of the original data.

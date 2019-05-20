@@ -24,6 +24,7 @@ if __name__ == '__main__':
     tool = yyc.YYC(base_reference=RULE1, current_code_matrix=RULE2)
     # tool = ddyyc.DDYYC(base_reference=RULE1, current_code_matrix=RULE2)
     input_matrix, size = data_handle.read_binary_from_all()
+    # TODO add error correcting code
     dna_motifs = tool.encode(input_matrix, size)
     data_handle.write_dna_file(dna_motifs)
     saver.save_model("models/yyc.pkl", tool)
@@ -31,4 +32,5 @@ if __name__ == '__main__':
     tool = saver.load_model("models/yyc.pkl")
     dna_motifs = data_handle.read_dna_file()
     output_matrix = tool.decode(dna_motifs)
+    # TODO check, repair, and remove error correcting code
     data_handle.write_all_from_binary(output_matrix, size)

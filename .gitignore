@@ -2,6 +2,7 @@
 bin/
 build/
 *.iml
+*.pkl
 
 # cache file
 __pycache__/
