@@ -10,12 +10,18 @@ class Monitor:
 
         if self.position < position:
             self.position = position
-            string = ""
+            string = "["
             for index in range(100):
                 if position + 1 > index:
                     string += "|"
                 else:
                     string += " "
+            string += "]  "
+            if 10 < self.position + 1 < 100:
+                string += " "
+            elif self.position + 1 < 10:
+                string += "  "
+
             print("\r" + string + str(position + 1) + "%", end=" ")
             if self.position + 1 >= 100:
                 print()

@@ -22,7 +22,7 @@ import utils.log as log
 # noinspection PyProtectedMember
 class DDYYC(yyc.YYC):
 
-    def init_check(self, support_bases, support_spacing, base_reference, current_code_matrix, max_ratio):
+    def __init_check__(self, support_bases, support_spacing, base_reference, current_code_matrix, max_ratio):
         """
         introduction: The verification of initialization parameters in DDYYC.
 
@@ -50,6 +50,8 @@ class DDYYC(yyc.YYC):
                            When the (count/length) >= this parameter, we decide that this binary sequence is not good.
 
         """
+        log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
+                   "Create the DDYYC method.")
 
         # check support bases
         for index in range(len(support_bases)):
@@ -88,7 +90,7 @@ class DDYYC(yyc.YYC):
                                    "Wrong current code matrix, "
                                    "the error locations are [" + str(row) + ", " + str(col) + "] and [" + str(row) + ", " + str(col) + "]! "
                                    "Rules are that they add up to 1 and multiply by 0.")
-            else:
+            elif base_reference[0] == base_reference[2]:
                 for col in range(len(current_code_matrix[row]) - 2):
                     if current_code_matrix[row][col] + current_code_matrix[row][col + 2] == 1 and current_code_matrix[row][col] * current_code_matrix[row][col + 2] == 0:
                         continue
@@ -98,6 +100,15 @@ class DDYYC(yyc.YYC):
                                    "the error locations are [" + str(row) + ", " + str(col) + "] and [" + str(row) + ", " + str(col) + "]! "
                                    "Rules are that they add up to 1 and multiply by 0.")
 
+            else:
+                for col in range(len(current_code_matrix[row]) - 3):
+                    if current_code_matrix[row][col] + current_code_matrix[row][col + 3] == 1 and current_code_matrix[row][col] * current_code_matrix[row][col + 3] == 0:
+                        continue
+                    else:
+                        log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
+                                   "Wrong current code matrix, "
+                                   "the error locations are [" + str(row) + ", " + str(col) + "] and [" + str(row) + ", " + str(col) + "]! "
+                                   "Rules are that they add up to 1 and multiply by 0.")
         # check max ratio
         if max_ratio <= 0.5 or max_ratio >= 1:
             log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),

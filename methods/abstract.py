@@ -17,7 +17,12 @@ import abc
 
 
 # noinspection PyPep8Naming,PyMethodMayBeStatic
-class abs_method(metaclass=abc.ABCMeta):
+class e_d(metaclass=abc.ABCMeta):
+
+    def __init__(self):
+        # Conversing base to actual index, where index 0 <-> A, index 1 <-> T, index 2 <-> C, index 3 <-> G.
+        self.base_index = {'A': 0, 'T': 1, 'C': 2, 'G': 3}
+        self.index_base = {0: 'A', 1: 'T', 2: 'C', 3: 'G'}
 
     def encode(self, matrix, file_size):
         raise Exception("Subclass must override this method")

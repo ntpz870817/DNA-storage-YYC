@@ -4,7 +4,7 @@ from utils import log
 
 
 # noinspection PyProtectedMember
-def friendly_check(dna_motif, base_index, max_repeat, max_content):
+def friendly_check(dna_motif, base_index=None, max_repeat=6, max_content=0.8):
     """
     introduction: Check DNA motif for friendliness.
 
@@ -30,17 +30,19 @@ def friendly_check(dna_motif, base_index, max_repeat, max_content):
         log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
                    "The value of max_repeat should more than 0.")
 
-    if max_content <= 0.25 or max_content >= 1:
+    if max_content < 0.5 or max_content >= 1:
         log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
                    "The value of max content should belong to the open range of 0 to 1.")
 
     if max(repeat_single_base(dna_motif, base_index)) >= max_repeat:
+        # print("\n" + ''.join(dna_motif))
+        # print(repeat_single_base(dna_motif, base_index))
         return False
 
     if cg_content(dna_motif) < (1 - max_content) or cg_content(dna_motif) > max_content:
         return False
 
-    if min_free_energy(dna_motif) >= -30:
+    if min_free_energy(dna_motif) > -30:
         return False
 
     return True
@@ -65,7 +67,11 @@ def repeat_single_base(dna_motif, base_index=None):
                 last_base = dna_motif[index]
                 save_base = last_base
             else:
-                current_count += 1
+                if index == len(dna_motif) - 1:
+                    if counts[base_index[save_base]] < current_count:
+                        counts[base_index[save_base]] = current_count
+                else:
+                    current_count += 1
 
         else:
             last_base = dna_motif[index]
