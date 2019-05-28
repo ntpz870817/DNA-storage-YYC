@@ -63,7 +63,7 @@ class YYC(e_d):
         if not current_code_matrix:
             current_code_matrix = [[1, 0, 1, 0], [1, 0, 1, 0], [0, 1, 0, 1], [0, 1, 0, 1]]
         if not support_bases:
-            support_bases = [abs_method.e_d.index_base[1]]
+            support_bases = [self.index_base[1]]
 
         # Detect parameters correctness
         self.__init_check__(support_bases, support_spacing, base_reference, current_code_matrix, max_ratio)
@@ -189,13 +189,6 @@ class YYC(e_d):
         log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
                    "Convert to DNA motif string set.")
         dna_motifs = self.__synthesis_motifs__(datas)
-
-        # print("AAA")
-        # indexs, datasx = self.__divide_indexs_datas__(self.__convert_binaries__(dna_motifs))
-        # print("BBB")
-        # temp = self.__sort_order__(indexs, datasx)
-        # print(matrix == temp)
-        # exit(0)
 
         return dna_motifs
 
@@ -434,6 +427,8 @@ class YYC(e_d):
                          Type: Two-dimensional list(int).
         """
 
+        super().__init__()
+
         if not dna_motifs:
             log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
                        "DNA motif string set is None")
@@ -442,7 +437,6 @@ class YYC(e_d):
         log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
                    "Convert DNA motifs to binary matrix.")
         temp_matrix = self.__convert_binaries__(dna_motifs)
-        print(len(temp_matrix))
 
         self.monitor.restore()
         log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
@@ -523,7 +517,7 @@ class YYC(e_d):
 
         for row in range(len(indexs)):
             self.monitor.print(row, len(indexs))
-            if 0 <= index < len(matrix):
+            if 0 <= row < len(matrix):
                 matrix[indexs[row]] = datas[row]
 
         del indexs, datas
@@ -569,6 +563,6 @@ class YYC(e_d):
         :returns upper_bit lower_bit: The upper bit and lower bit.
                                        Type: int, int
         """
-        upper_bit = self.base_reference[abs_method.base_index[current_base]]
-        lower_bit = self.current_code_matrix[e_d.base_index[support_base]][e_d.base_index[current_base]]
+        upper_bit = self.base_reference[self.base_index[current_base]]
+        lower_bit = self.current_code_matrix[self.base_index[support_base]][self.base_index[current_base]]
         return upper_bit, lower_bit
