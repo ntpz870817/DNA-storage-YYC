@@ -4,7 +4,7 @@
 
 ---
 
-**YYC** is a ...
+**YYC** is a DNA storage codec algorithm developed by BGI-research. Briefly, it can transcode two binary sequences into one DNA sequence. This algorithm can help to achieve a high-density, high-feasibility DNA storage based on DNA synthesis.
 
 ## Environment Configuration
 The kit is developed by **Python3.5**.
