@@ -1,5 +1,5 @@
 """
-Name: YYC(Ying-Yang DNA Storage Code)
+Name: YYC(Yin-Yang DNA Storage Code)
 
 Coder: HaoLing ZHANG (BGI-Research)[V1]
 
@@ -19,11 +19,10 @@ import sys
 import utils.log as log
 import utils.monitor as monitor
 import utils.motif_friendly as motif_friendly
-from methods.abstract import e_d
 
 
-# noinspection PyUnresolvedReferences,PyMethodMayBeStatic,PyUnusedLocal,PyProtectedMember,PyBroadException
-class YYC(e_d):
+# noinspection PyUnresolvedReferences,PyMethodMayBeStatic,PyUnusedLocal,PyProtectedMember,PyBroadException,PyPep8Naming
+class YYC:
 
     def __init__(self, base_reference=None, current_code_matrix=None, support_bases=None, support_spacing=0,
                  max_ratio=0.8, search_count=1):
@@ -54,8 +53,8 @@ class YYC(e_d):
                            When the (count/length) >= this parameter, we decide that this binary sequence is not good.
 
         """
-
-        super().__init__()
+        self.base_index = {'A': 0, 'T': 1, 'C': 2, 'G': 3}
+        self.index_base = {0: 'A', 1: 'T', 2: 'C', 3: 'G'}
 
         # Set default values for Rules 1 and 2
         if not base_reference:
@@ -63,7 +62,7 @@ class YYC(e_d):
         if not current_code_matrix:
             current_code_matrix = [[1, 0, 1, 0], [1, 0, 1, 0], [0, 1, 0, 1], [0, 1, 0, 1]]
         if not support_bases:
-            support_bases = [self.index_base[1]]
+            support_bases = [self.index_base.get(0)]
 
         # Detect parameters correctness
         self.__init_check__(support_bases, support_spacing, base_reference, current_code_matrix, max_ratio)
@@ -408,9 +407,9 @@ class YYC(e_d):
 
         one_base = None
         if self.current_code_matrix[self.base_index.get(support_base)][current_options[0]] == int(lower_bit):
-            one_base = self.index_base[current_options[0]]
+            one_base = self.index_base.get(current_options[0])
         else:
-            one_base = self.index_base[current_options[1]]
+            one_base = self.index_base.get(current_options[1])
 
         return one_base
 
@@ -426,8 +425,6 @@ class YYC(e_d):
         :return matrix: The binary matrix corresponding to the dna motifs.
                          Type: Two-dimensional list(int).
         """
-
-        super().__init__()
 
         if not dna_motifs:
             log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
@@ -563,6 +560,6 @@ class YYC(e_d):
         :returns upper_bit lower_bit: The upper bit and lower bit.
                                        Type: int, int
         """
-        upper_bit = self.base_reference[self.base_index[current_base]]
-        lower_bit = self.current_code_matrix[self.base_index[support_base]][self.base_index[current_base]]
+        upper_bit = self.base_reference[self.base_index.get(current_base)]
+        lower_bit = self.current_code_matrix[self.base_index.get(support_base)][self.base_index.get(current_base)]
         return upper_bit, lower_bit

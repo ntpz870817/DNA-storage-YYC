@@ -38,9 +38,11 @@ def output(info_type=0, class_name=None, method_name=None, info=None):
     """
 
     if class_name == "" or method_name == "":
-        string = "[" + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())) + "] " + info
+        # string = "[" + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())) + "] " + info
+        string = info
     else:
-        string = "[" + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())) + "] " + class_name + " -> " + method_name + " : " + info
+        # string = "[" + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())) + "] " + class_name + " -> " + method_name + " : " + info
+        string = class_name + " -> " + method_name + " : " + info
 
     if info_type == NORMAL:
         # Print normal

@@ -18,7 +18,7 @@ import utils.monitor as monitor
 
 
 # noinspection PyUnresolvedReferences,PyBroadException,PyProtectedMember,PyUnusedLocal
-def read_binary_from_all(path, interval=120):
+def read_binary_from_all(path, interval):
     """
     introduction: Writing DNA motif set from documents.
 
@@ -34,6 +34,9 @@ def read_binary_from_all(path, interval=120):
     :return size: This refers to file size, to reduce redundant bits when transferring DNA to binary files.
                   Type: int
     """
+
+    if interval is None:
+        interval = 120
 
     m = monitor.Monitor()
     try:
