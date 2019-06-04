@@ -28,15 +28,15 @@ def save_model(path, model):
     :param model: Current model for encoding.
     """
 
-    # log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
-    #            "Save model to file: " + path)
+    log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
+               "Save model to file: " + path)
     with open(path, "wb") as file:
         pickle.dump(model, file)
 
 
 # noinspection PyProtectedMember
 def load_model(path):
-    # log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
-    #            "Load model from file: " + path)
+    log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
+               "Load model from file: " + path)
     with open(path, "rb") as file:
         return pickle.load(file)
