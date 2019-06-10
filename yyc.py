@@ -83,8 +83,8 @@ class YYC:
         introduction: The verification of initialization parameters.
 
         :param base_reference: Correspondence between base and binary data (RULE 1).
-                                Make sure that the first and third, and the second and fourth are equal, so there are only two cases:
-                                [0, 0, 1, 1] or [1, 1, 0, 0].
+                                Make sure that the first and third, and the second and fourth are equal, so there are only 6 cases:
+                                Choose two from base_reference as 0 and two as 1.
 
         :param current_code_matrix: Conversion rule between base and binary data based on support base and current base (RULE 2).
                                      Label row is the support base, label col is the current base.
@@ -126,7 +126,7 @@ class YYC:
                 log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
                            "Only 0 and 1 can be included in the base reference, "
                            "and base_reference[" + str(index) + "] has entered " + str(base_reference[index] + "!"))
-        if base_reference[0] != base_reference[1] or base_reference[2] != base_reference[3]:
+        if sum(base_reference) != 2:
             log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
                        "Wrong correspondence between base and binary data!")
 
