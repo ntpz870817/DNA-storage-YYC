@@ -22,12 +22,16 @@ In addition, the packages we are calling now is as follows:
 
 ## Kit Tree Diagram
 ```html
+├── rule                              // Rule module
+│    ├── rule_finder.py               // Find the best rules
+│    ├── models.pkl                   // Mapping between binaries and rules
+│    ├── rules.pkl                    // Total rule set file
 ├── utils                             // Util module
 │    ├── data_handle.py               // Conversion of DNA motifs and binary document
-│    ├── log.py                       // Outputting the logs in console
+│    ├── log.py                       // Output the logs in console
 │    ├── model_saver.py               // Save model to file and load model from file
-│    ├── monitor.py                   // Getting the progress  situation and the time left
-│    ├── motif_friendly.py            // Determining whether motif is friendly to sequencing and synthesis
+│    ├── monitor.py                   // Get the progress situation and the time left
+│    ├── motif_friendly.py            // Determine whether motif is friendly to sequencing and synthesis
 ├── entry.py                          // Main calling function
 ├── README.md                         // Description document of kit
 ```
