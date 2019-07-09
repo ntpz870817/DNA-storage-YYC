@@ -18,7 +18,7 @@ import random
 import sys
 import utils.log as log
 import utils.monitor as monitor
-import utils.motif_friendly as motif_friendly
+import utils.validity as motif_friendly
 
 
 # noinspection PyUnresolvedReferences,PyMethodMayBeStatic,PyUnusedLocal,PyProtectedMember,PyBroadException,PyPep8Naming
