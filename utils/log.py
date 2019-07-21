@@ -37,7 +37,7 @@ def output(info_type=0, class_name=None, method_name=None, info=None):
                   Type: String
     """
 
-    if class_name == "" or method_name == "":
+    if class_name is None or method_name is None:
         # string = "[" + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())) + "] " + info
         string = info
     else:

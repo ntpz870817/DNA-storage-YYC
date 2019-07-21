@@ -463,7 +463,7 @@ class YYC:
         matrix = []
 
         for row in range(len(dna_motifs)):
-            self.monitor.print(row, len(dna_motifs))
+            self.monitor.output(row, len(dna_motifs))
             upper_row_datas, lower_row_datas = self.__dna_motif_to_binaries__(dna_motifs[row])
             matrix.append(upper_row_datas)
             matrix.append(lower_row_datas)
@@ -487,7 +487,7 @@ class YYC:
         datas = []
 
         for row in range(len(matrix)):
-            self.monitor.print(row, len(matrix))
+            self.monitor.output(row, len(matrix))
             # Convert binary index to decimal.
             index = int("".join(list(map(str, matrix[row][:self.index_binary_length]))), 2)
 
@@ -513,7 +513,7 @@ class YYC:
         matrix = [[0 for col in range(len(datas[0]))] for row in range(len(indexs))]
 
         for row in range(len(indexs)):
-            self.monitor.print(row, len(indexs))
+            self.monitor.output(row, len(indexs))
             if 0 <= row < len(matrix):
                 matrix[indexs[row]] = datas[row]
 
