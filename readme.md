@@ -54,7 +54,7 @@ When user need to customize YYC transcoding process, an example of command could
 
 ```python
 
-	yyc.YYC(base_reference=[0, 0, 1, 1], current_code_matrix=[[0, 1, 0, 1],[0, 1, 0, 1],[0, 1, 0, 1],[0, 1, 0, 1]],
+yyc.YYC(base_reference=[0, 0, 1, 1], current_code_matrix=[[0, 1, 0, 1],[0, 1, 0, 1],[0, 1, 0, 1],[0, 1, 0, 1]],
 		support_bases="AC", support_spacing=1, max_ratio=0.7, search_count=20)
 ```
 
