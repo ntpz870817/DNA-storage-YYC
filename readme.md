@@ -22,31 +22,36 @@ In addition, the packages we are calling now is as follows:
 
 ## Kit Tree Diagram
 ```html
-├── rule                              // Rule module
-│    ├── rule_finder.py               // Find the best rules
-│    ├── models.pkl                   // Mapping between binaries and rules
-│    ├── rules.pkl                    // Total rule set file
+├── test                              // Test module
+│    ├── files                        // Test files
+│    │    ├── Mona Lisa.jpg           // Mona Lisa.jpg
+│    │    ├── United Nations Flag.bmp // United Nations Flag.bmp
+│    ├── generated                    // Generated files from handle
+│    ├── test_mona_lisa.py            // Run YYC using Mona Lisa.jpg
+│    ├── test_united_nations_flag.py  // Run YYC using United Nations Flag.bmp
 ├── utils                             // Util module
 │    ├── data_handle.py               // Conversion of DNA motifs and binary document
+│    ├── index_operator.py            // Processing the relationship between index and data
 │    ├── log.py                       // Output the logs in console
 │    ├── model_saver.py               // Save model to file and load model from file
 │    ├── monitor.py                   // Get the progress situation and the time left
-│    ├── motif_friendly.py            // Determine whether motif is friendly to sequencing and synthesis
-├── entry.py                          // Main calling function
+│    ├── validity.py                  // Determining whether a DNA sequence is easy or not for sequencing and synthesis
+├── codec_factory.py                  // Main calling function
+├── yyc.py                            // YYC (Yin-Yang DNA Storage Code)
 ├── README.md                         // Description document of kit
 ```
 
 ## Method of Application
-In the encoding process, we first instantiate the method, and then pass the method and the necessary path into **entry**.
+In the encoding process, we first instantiate the method, and then pass the method and the necessary path into **codec_factory**.
 
 The specific usage is as follows:
 
 ```python
-import yyc, entry
+import yyc, codec_factory
 
 method = yyc.YYC()
 
-entry.encode(method, input_path="C:\\init.mp4", output_path="C:\\target.dna", model_path="C:\\yyc.pkl")
+codec_factory.encode(method, input_path="C:\\init.mp4", output_path="C:\\target.dna", model_path="C:\\yyc.pkl")
 ```
 
 In the decoding process, we first instantiate the method (using path of model file), and then pass the method and the necessary path into **entry**.
@@ -54,7 +59,7 @@ In the decoding process, we first instantiate the method (using path of model fi
 The specific usage (using init method) is as follows:
 
 ```python
-import entry
+import codec_factory
 
-entry.decode(input_path="C:\\target.dna", output_path="C:\\target.mp4", model_path="C:\\yyc.pkl")
+codec_factory.decode(input_path="C:\\target.dna", output_path="C:\\target.mp4", model_path="C:\\yyc.pkl")
 ```
