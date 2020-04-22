@@ -2,7 +2,7 @@
 Name: YYC (Yin-Yang DNA Storage Code)
 
 Reference:
-Ping, Z., Chen, S., Huang, X., Zhu, S., Chai, C., Zhang, H., ... & Yang, H. (2019). Towards Practical and Robust DNA-based Data Archiving by Codec System Named'Yin-Yang'. bioRxiv, 829721.
+Ping, Z., Chen, S., Huang, X., Zhu, S., Chai, C., Zhang, H., ... & Yang, H. (2019). Towards Practical and Robust DNA-based Data Archiving by Codec System Named 'Yin-Yang'. bioRxiv, 829721.
 
 Coder: HaoLing ZHANG (BGI-Research)[V1]
 
