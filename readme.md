@@ -61,7 +61,7 @@ import yyc, codec_factory
 
 method = yyc.YYC()
 
-codec_factory.encode(method, input_path="C:\\Mona Lisa.jpg, output_path="C:\\target.dna", model_path="C:\\yyc.pkl")
+codec_factory.encode(method, input_path="C:\\Mona Lisa.jpg", output_path="C:\\target.dna", model_path="C:\\yyc.pkl")
 ```
 
 In the decoding process, we first instantiate the method (using path of model file), and then pass the method and the necessary path into **entry**.
