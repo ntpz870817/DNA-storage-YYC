@@ -17,16 +17,15 @@ In addition, the packages we are calling now is as follows:
 - [x] math
 - [x] struct
 - [x] datetime
-- [x] numpy
 - [x] pickle
 
 ## Kit Tree Diagram
 ```html
-├── test                              // Test module
+├── examples                          // Test module
 │    ├── files                        // Test files
 │    │    ├── Mona Lisa.jpg           // Mona Lisa.jpg
 │    │    ├── United Nations Flag.bmp // United Nations Flag.bmp
-│    ├── generated                    // Generated files from handle
+│    ├── output                       // Generated files from handle
 │    ├── test_mona_lisa.py            // Run YYC using Mona Lisa.jpg
 │    ├── test_united_nations_flag.py  // Run YYC using United Nations Flag.bmp
 ├── utils                             // Util module

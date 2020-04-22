@@ -2,10 +2,10 @@ import codec_factory
 import yyc
 from utils import data_handle
 
-read_file_path = "./files/United Nations Flag.bmp"
-dna_path = "./generated/united_nations_flag.dna"
-model_path = "./generated/united_nations_flag.pkl"
-write_file_path = "./generated/output_united_nations_flag.jpg"
+read_file_path = "./files/Mona Lisa.jpg"
+dna_path = "./output/mona_lisa.dna"
+model_path = "./output/mona_lisa.pkl"
+write_file_path = "./output/output_mona_lisa.jpg"
 
 if __name__ == "__main__":
     tool = yyc.YYC()

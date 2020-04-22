@@ -8,3 +8,6 @@ __pycache__/
 
 # Pycharm entries
 .idea/
+
+examples/output/*
+!examples/output/note.md
