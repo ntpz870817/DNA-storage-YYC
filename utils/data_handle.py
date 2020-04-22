@@ -5,100 +5,110 @@ Coder: HaoLing ZHANG (BGI-Research)[V1]
 
 Current Version: 1
 
-Function(s): Conversion of DNA motifs and binary document
+Function(s):
+Conversion of DNA sequences and binary document
 """
 
-import os
 import struct
 import math
 import sys
+import os
 
 import utils.log as log
 import utils.monitor as monitor
 
 
-# noinspection PyUnresolvedReferences,PyBroadException,PyProtectedMember,PyUnusedLocal
-def read_binary_from_all(path, interval):
+# noinspection PyProtectedMember
+def read_binary_from_all(path, segment_length=120, need_log=False):
     """
-    introduction: Writing DNA motif set from documents.
+    introduction: Reading binary matrix from document.
 
     :param path: File path.
                   Type: string
 
-    :param interval: The cut length of DNA motif.
-                      Considering current DNA synthesis factors, we usually set 120 bases as a motif.
+    :param segment_length: The binary segment length used for DNA sequence generation.
+                           Considering current DNA synthesis technique limitation,
+                           we usually set 120 as default segment length.
 
-    :return matrix: A corresponding DNA motif string in which each row acts as a motif.
+    :param need_log: choose to output log file or not.
+
+    :return matrix: A matrix in which each row represents a binary segment that will be used for DNA sequence generation.
                     Type: two-dimensional list(int)
-
-    :return size: This refers to file size, to reduce redundant bits when transferring DNA to binary files.
-                  Type: int
     """
-
-    if interval is None:
-        interval = 120
 
     m = monitor.Monitor()
     try:
 
         # Open selected file
-        with open(path, mode='rb') as file:
+        with open(path, mode="rb") as file:
 
-            log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
-                       "Read binary matrix from file: " + path)
+            if need_log:
+                log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
+                           "Read binary matrix from file: " + path)
 
             size = os.path.getsize(path)
 
             # Set init storage matrix
-            matrix = [[0 for col in range(interval)] for row in range(math.ceil(size * 8 / interval))]
+            matrix = [[0 for _ in range(segment_length)] for _ in range(math.ceil(size * 8 / segment_length))]
 
             row = 0
             col = 0
             for byte_index in range(size):
-                m.output(byte_index, size)
+                if need_log:
+                    m.output(byte_index, size)
                 # Read a file as bytes
                 one_byte = file.read(1)
                 element = list(map(int, list(str(bin(struct.unpack("B", one_byte)[0]))[2:].zfill(8))))
                 for bit_index in range(8):
                     matrix[row][col] = element[bit_index]
                     col += 1
-                    if col == interval:
+                    if col == segment_length:
                         col = 0
                         row += 1
+
+        if int(len(str(bin(len(matrix)))) - 2) * 7 > segment_length:
+            if need_log:
+                log.output(log.WARN, str(__name__), str(sys._getframe().f_code.co_name),
+                           "The proportion of index in whole sequence may be high. \n"
+                           "It is recommended to increase the length of output DNA sequences "
+                           "or to divide the file into more segment pools")
 
         return matrix, size
     except IOError:
         log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
-                   "The file selection operation was not performed correctly. Please complete the operation again!")
+                   "The file selection operation was not performed correctly. Please execute the operation again!")
 
 
 # noinspection PyBroadException,PyProtectedMember
-def write_all_from_binary(path, matrix, size):
+def write_all_from_binary(path, matrix, size, need_log=False):
     """
     introduction: Writing binary matrix to document.
 
     :param path: File path.
                   Type: string
 
-    :param matrix: A corresponding DNA motif string in which each row acts as a motif.
+    :param matrix: A matrix in which each row represents a binary segment that will be used for DNA sequence generation.
                     Type: two-dimensional list(int)
 
     :param size: This refers to file size, to reduce redundant bits when transferring DNA to binary files.
                   Type: int
 
+    :param need_log: choose to output log file or not.
     """
     m = monitor.Monitor()
 
     try:
-        with open(path, 'wb+') as file:
-            log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
-                       "Write file from binary matrix: " + path)
+        with open(path, "wb+") as file:
+            if need_log:
+                log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
+                           "Write file from binary matrix: " + path)
 
             # Change bit to byte (8 -> 1), and write a file as bytes
             bit_index = 0
             temp_byte = 0
             for row in range(len(matrix)):
-                m.output(row, len(matrix))
+                if need_log:
+                    m.output(row, len(matrix))
                 for col in range(len(matrix[0])):
                     bit_index += 1
                     temp_byte *= 2
@@ -106,70 +116,78 @@ def write_all_from_binary(path, matrix, size):
                     if bit_index == 8:
                         if size >= 0:
                             file.write(struct.pack("B", int(temp_byte)))
+                            bit_index = 0
+                            temp_byte = 0
                             size -= 1
-                        bit_index = 0
-                        temp_byte = 0
     except IOError:
         log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
-                   "The file selection operation was not performed correctly. Please complete the operation again!")
+                   "The file selection operation was not performed correctly. Please execute the operation again!")
 
 
 # noinspection PyBroadException,PyProtectedMember
-def read_dna_file(path):
+def read_dna_file(path, need_log=False):
     """
-    introduction: Reading DNA motif set from documents.
+    introduction: Reading DNA sequence set from documents.
 
     :param path: File path.
                   Type: string
 
-    :return dna_motifs: A corresponding DNA sequence string in which each row acts as a sequence.
-                         Type: one-dimensional list(string)
+    :return dna_sequences: A corresponding DNA sequence string in which each row acts as a sequence.
+                           Type: one-dimensional list(string)
+
+    :param need_log: need output log.
     """
 
     m = monitor.Monitor()
 
-    dna_motifs = []
+    dna_sequences = []
 
     try:
-        with open(path, 'r') as file:
-            log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
-                       "Read DNA motifs from file: " + path)
+        with open(path, "r") as file:
+            if need_log:
+                log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
+                           "Read DNA sequences from file: " + path)
 
             # Read current file by line
             lines = file.readlines()
             for index in range(len(lines)):
-                m.output(index, len(lines))
+                if need_log:
+                    m.output(index, len(lines))
                 line = lines[index]
-                dna_motifs.append([line[col] for col in range(len(line) - 1)])
+                dna_sequences.append([line[col] for col in range(len(line) - 1)])
 
-        return dna_motifs
+        return dna_sequences
     except IOError:
         log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
-                   "The file selection operation was not performed correctly. Please complete the operation again!")
+                   "The file selection operation was not performed correctly. Please execute the operation again!")
 
 
 # noinspection PyProtectedMember,PyBroadException
-def write_dna_file(path, dna_motifs):
+def write_dna_file(path, dna_sequences, need_log=False):
     """
-    introduction: Writing DNA motif set to documents.
+    introduction: Writing DNA sequence set to documents.
 
     :param path: File path.
                   Type: string
 
-    :param dna_motifs: A corresponding DNA sequence string in which each row acts as a sequence.
-                        Type: one-dimensional list(string)
+    :param dna_sequences: Generated DNA sequences.
+                          Type: one-dimensional list(string)
+
+    :param need_log: choose to output log file or not.
     """
 
     m = monitor.Monitor()
 
     try:
-        with open(path, 'w') as file:
-            log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
-                       "Write DNA motifs to file: " + path)
-            for row in range(len(dna_motifs)):
-                m.output(row, len(dna_motifs))
-                file.write("".join(dna_motifs[row]) + "\n")
-        return dna_motifs
+        with open(path, "w") as file:
+            if need_log:
+                log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
+                           "Write DNA sequences to file: " + path)
+            for row in range(len(dna_sequences)):
+                if need_log:
+                    m.output(row, len(dna_sequences))
+                file.write("".join(dna_sequences[row]) + "\n")
+        return dna_sequences
     except IOError:
         log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
-                   "The file selection operation was not performed correctly. Please complete the operation again!")
+                   "The file selection operation was not performed correctly. Please execute the operation again!")
