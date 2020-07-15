@@ -55,7 +55,7 @@ def read_binary_from_all(path, segment_length=120, need_log=False):
             col = 0
             for byte_index in range(size):
                 if need_log:
-                    m.output(byte_index, size)
+                    m.output(byte_index + 1, size)
                 # Read a file as bytes
                 one_byte = file.read(1)
                 element = list(map(int, list(str(bin(struct.unpack("B", one_byte)[0]))[2:].zfill(8))))
@@ -108,7 +108,7 @@ def write_all_from_binary(path, matrix, size, need_log=False):
             temp_byte = 0
             for row in range(len(matrix)):
                 if need_log:
-                    m.output(row, len(matrix))
+                    m.output(row + 1, len(matrix))
                 for col in range(len(matrix[0])):
                     bit_index += 1
                     temp_byte *= 2
@@ -152,7 +152,7 @@ def read_dna_file(path, need_log=False):
             lines = file.readlines()
             for index in range(len(lines)):
                 if need_log:
-                    m.output(index, len(lines))
+                    m.output(index + 1, len(lines))
                 line = lines[index]
                 dna_sequences.append([line[col] for col in range(len(line) - 1)])
 
@@ -185,7 +185,7 @@ def write_dna_file(path, dna_sequences, need_log=False):
                            "Write DNA sequences to file: " + path)
             for row in range(len(dna_sequences)):
                 if need_log:
-                    m.output(row, len(dna_sequences))
+                    m.output(row + 1, len(dna_sequences))
                 file.write("".join(dna_sequences[row]) + "\n")
         return dna_sequences
     except IOError:
