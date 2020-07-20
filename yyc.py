@@ -17,15 +17,17 @@ Advantages:
 (2) Prevent repetitive motifs, like ATCGATCG...
 (3) Increase the number of sequence changes (1,536 cases), increasing data security.
 """
+import copy
 import random
 import sys
 
 import math
 import numpy
 
-import utils.validity as validity
-import utils.log as log
-import utils.monitor as monitor
+import Chamaeleo.methods.components.inherent as inherent
+import Chamaeleo.methods.components.validity as validity
+import Chamaeleo.utils.log as log
+import Chamaeleo.utils.monitor as monitor
 
 
 # noinspection PyProtectedMember
@@ -40,7 +42,6 @@ class YYC:
         max_ratio=0.8,
         search_count=2,
         max_homopolymer=math.inf,
-        max_simple_segment=math.inf,
         max_content=1
     ):
         """
@@ -68,9 +69,10 @@ class YYC:
         :param max_ratio: The max ratio of 0 or 1.
                            When the (count/length) >= this parameter, we decide that this binary sequence is not good.
 
+        :param max_homopolymer: maximum length of homopolymer.
+
+        :param max_content: maximum content of C and G, which means GC content is in [1 - max_content, max_content].
         """
-        self.base_index = {'A': 0, 'C': 1, 'G': 2, 'T': 3}
-        self.index_base = {0: 'A', 1: 'C', 2: 'G', 3: 'T'}
 
         # Set default values for Rules 1 and 2 (RULE 495)
         if not base_reference:
@@ -83,7 +85,7 @@ class YYC:
                 [1, 1, 0, 0],
             ]
         if not support_bases:
-            support_bases = [self.index_base.get(0)]
+            support_bases = [inherent.index_base.get(0)]
 
         # Assign input data to class variables
         self.base_reference = base_reference
@@ -94,7 +96,6 @@ class YYC:
         self.search_count = search_count
 
         self.max_homopolymer = max_homopolymer
-        self.max_simple_segment = max_simple_segment
         self.max_content = max_content
 
         # Detect parameters correctness
@@ -303,12 +304,11 @@ class YYC:
         search_counts = [0 for _ in range(self.search_count + 1)]
         additional = 0
         while len(good_data_set) + len(bad_data_set) > 0:
-            if len(good_data_set) > 0 and  len(bad_data_set) > 0:
+            if len(good_data_set) > 0 and len(bad_data_set) > 0:
                 fixed_list = random.sample(bad_data_set, 1)[0]
                 bad_data_set.remove(fixed_list)
                 another_list, is_upper, search_count = self._searching_results(fixed_list, good_data_set,
                                                                                index_bit_length, total_count)
-
                 if search_count >= 0:
                     good_data_set.remove(another_list)
                     search_counts[search_count] += 1
@@ -327,13 +327,11 @@ class YYC:
                 good_data_set.remove(fixed_list)
                 another_list, is_upper, search_count = self._searching_results(fixed_list, good_data_set,
                                                                                index_bit_length, total_count)
-
                 if search_count >= 0:
                     good_data_set.remove(another_list)
                     search_counts[search_count] += 1
                 else:
                     additional += 1
-
                 if is_upper:
                     data_set.append(fixed_list)
                     data_set.append(another_list)
@@ -346,7 +344,6 @@ class YYC:
                 bad_data_set.remove(fixed_list)
                 another_list, is_upper, search_count = self._searching_results(fixed_list, bad_data_set,
                                                                                index_bit_length, total_count)
-
                 if search_count >= 0:
                     bad_data_set.remove(another_list)
                     search_counts[search_count] += 1
@@ -367,14 +364,18 @@ class YYC:
             if need_log:
                 self.monitor.output(total_count - (len(good_data_set) + len(bad_data_set)), total_count)
 
-        del good_data_set, bad_data_set
+        results = {}
+        for index, count in enumerate(search_counts):
+            results[index] = count
 
         if need_log:
             log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
-                       "Number of additional bit segment is " + str(additional) +
-                       " in original " + str(total_count) + " bit segments.")
+                       "Number of additional bit segment is " + str(additional)
+                       + " in original " + str(total_count) + " bit segments.")
             log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
-                       "In addition, the actual search counts is " + str(search_counts))
+                       "In addition, the actual search counts is " + str(results))
+
+        del good_data_set, bad_data_set
 
         return data_set
 
@@ -382,37 +383,31 @@ class YYC:
         if len(other_lists) > 0:
             for search_index in range(self.search_count + 1):
                 another_list = random.sample(other_lists, 1)[0]
-                n_dna = "".join(self._list_to_sequence(fixed_list, another_list))
-                c_dna = "".join(self._list_to_sequence(another_list, fixed_list))
-                if validity.check(n_dna,
+
+                n_dna, _ = self._list_to_sequence(fixed_list, another_list)
+                if validity.check("".join(n_dna),
                                   max_homopolymer=self.max_homopolymer,
-                                  max_simple_segment=self.max_simple_segment,
                                   max_content=self.max_content):
                     return another_list, True, search_index
-                if validity.check(c_dna,
+
+                c_dna, _ = self._list_to_sequence(another_list, fixed_list)
+                if validity.check("".join(c_dna),
                                   max_homopolymer=self.max_homopolymer,
-                                  max_simple_segment=self.max_simple_segment,
                                   max_content=self.max_content):
 
                     return another_list, False, search_index
 
-        # insert at least 2 interval
-        random_index = random.randint(total_count + 3, math.pow(2, index_length) - 1)
-        index_list = list(map(int, list(str(bin(random_index))[2:].zfill(index_length))))
         while True:
-            random_list = index_list + [random.randint(0, 1) for _ in range(len(fixed_list) - index_length)]
-            n_dna = "".join(self._list_to_sequence(fixed_list, random_list))
-            c_dna = "".join(self._list_to_sequence(random_list, fixed_list))
-            if validity.check(n_dna,
-                              max_homopolymer=self.max_homopolymer,
-                              max_simple_segment=self.max_simple_segment,
-                              max_content=self.max_content):
-                return random_list, True, -1
-            if validity.check(c_dna,
-                              max_homopolymer=self.max_homopolymer,
-                              max_simple_segment=self.max_simple_segment,
-                              max_content=self.max_content):
+            # insert at least 2 interval
+            random_index = random.randint(total_count + 3, math.pow(2, index_length) - 1)
+            index_list = list(map(int, list(str(bin(random_index))[2:].zfill(index_length))))
 
+            n_dna, random_list = self._list_to_sequence(fixed_list, index_list)
+            if n_dna is not None:
+                return random_list, True, -1
+
+            c_dna, random_list = self._list_to_sequence(index_list, fixed_list)
+            if c_dna is not None:
                 return random_list, False, -1
 
     def _synthesis_sequences(self, data_set, need_log):
@@ -432,7 +427,8 @@ class YYC:
         for row in range(0, len(data_set), 2):
             if need_log:
                 self.monitor.output(row + 2, len(data_set))
-            dna_sequences.append(self._list_to_sequence(data_set[row], data_set[row + 1]))
+            dna_sequence, _ = self._list_to_sequence(data_set[row], data_set[row + 1])
+            dna_sequences.append(dna_sequence)
 
         del data_set
 
@@ -448,20 +444,71 @@ class YYC:
         :param lower_list: The lower binary list
                             Type: List(byte)
 
-        :return: one DNA sequence
-                  Type: List(char)
+        :return: one DNA sequence and additional bit payload.
+                  Type: List(char), List(byte).
         """
 
         dna_sequence = []
 
-        for col in range(len(upper_list)):
-            if col > self.support_spacing:
-                dna_sequence.append(self._binary_to_base(upper_list[col], lower_list[col],
-                                                         dna_sequence[col - (self.support_spacing + 1)]))
+        if len(upper_list) == len(lower_list):
+            for index, (upper_bit, lower_bit) in enumerate(zip(upper_list, lower_list)):
+                if index > self.support_spacing:
+                    support_base = dna_sequence[index - (self.support_spacing + 1)]
+                else:
+                    support_base = self.support_bases[index]
+
+                dna_sequence.append(self._binary_to_base(upper_bit, lower_bit, support_base))
+
+            return dna_sequence, None
+
+        addition_length = abs(len(upper_list) - len(lower_list))
+
+        if len(upper_list) > len(lower_list):
+            flag = -1
+            re_upper_list = copy.deepcopy(upper_list)
+            re_lower_list = copy.deepcopy(lower_list + [-1 for _ in range(addition_length)])
+        else:
+            flag = 1
+            re_upper_list = copy.deepcopy(upper_list + [-1 for _ in range(addition_length)])
+            re_lower_list = copy.deepcopy(lower_list)
+
+        for index, (upper_bit, lower_bit) in enumerate(zip(re_upper_list, re_lower_list)):
+            if index > self.support_spacing:
+                support_base = dna_sequence[index - (self.support_spacing + 1)]
             else:
-                dna_sequence.append(self._binary_to_base(upper_list[col], lower_list[col],
-                                                         self.support_bases[col]))
-        return dna_sequence
+                support_base = self.support_bases[index]
+
+            if upper_bit != -1 and lower_bit != -1:
+                dna_sequence.append(self._binary_to_base(upper_bit, lower_bit, support_base))
+            elif upper_bit == -1:
+                is_chosen = False
+                for chosen_bit in [0, 1]:
+                    current_base = self._binary_to_base(chosen_bit, lower_bit, support_base)
+                    if validity.check("".join(dna_sequence) + current_base,
+                                      max_homopolymer=self.max_homopolymer, max_content=self.max_content):
+                        re_upper_list[index] = chosen_bit
+                        dna_sequence.append(current_base)
+                        is_chosen = True
+                        break
+                if not is_chosen:
+                    return None, re_upper_list
+            else:
+                is_chosen = False
+                for chosen_bit in [0, 1]:
+                    current_base = self._binary_to_base(upper_bit, chosen_bit, support_base)
+                    if validity.check("".join(dna_sequence) + current_base,
+                                      max_homopolymer=self.max_homopolymer, max_content=self.max_content):
+                        re_lower_list[index] = chosen_bit
+                        dna_sequence.append(current_base)
+                        is_chosen = True
+                        break
+                if not is_chosen:
+                    return None, re_lower_list
+
+        if flag == 1:
+            return dna_sequence, re_upper_list
+        else:
+            return dna_sequence, re_lower_list
 
     def _binary_to_base(self, upper_bit, lower_bit, support_base):
         """
@@ -484,10 +531,10 @@ class YYC:
             if self.base_reference[index] == int(upper_bit):
                 current_options.append(index)
 
-        if self.current_code_matrix[self.base_index.get(support_base)][current_options[0]] == int(lower_bit):
-            one_base = self.index_base[current_options[0]]
+        if self.current_code_matrix[inherent.base_index.get(support_base)][current_options[0]] == int(lower_bit):
+            one_base = inherent.index_base[current_options[0]]
         else:
-            one_base = self.index_base[current_options[1]]
+            one_base = inherent.index_base[current_options[1]]
 
         return one_base
 
@@ -594,7 +641,7 @@ class YYC:
         :returns upper_bit lower_bit: The upper bit and lower bit.
                                        Type: int, int
         """
-        upper_bit = self.base_reference[self.base_index[current_base]]
-        lower_bit = self.current_code_matrix[self.base_index[support_base]][self.base_index[current_base]]
+        upper_bit = self.base_reference[inherent.base_index[current_base]]
+        lower_bit = self.current_code_matrix[inherent.base_index[support_base]][inherent.base_index[current_base]]
 
         return upper_bit, lower_bit
