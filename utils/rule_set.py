@@ -14,24 +14,15 @@ import sys
 import numpy
 import utils.log as log
 import utils.monitor as monitor
+from utils.model_saver import save_model
 
 
-def get_yyc_rule_by_index(index, need_log=False):
-    """
-    introduction: Get Yin and Yang rule of YYC by index (1536 types of rules)
-
-    :param index: rule index.
-
-    :param need_log: Show the log.
-
-    :return: YYC rule with [self.support_base, self.rule1, self.rule2].
-    """
+def get_yyc_rules(need_log=False):
     rules = []
     temp_rule1 = ["".join(x) for x in itertools.product("01", repeat=4)]
     temp_rule2 = ["".join(x) for x in itertools.product("01", repeat=16)]
 
     m = monitor.Monitor()
-
 
     if need_log:
         # noinspection PyProtectedMember
@@ -53,6 +44,21 @@ def get_yyc_rule_by_index(index, need_log=False):
 
                 if need_log:
                     m.output(step, len(temp_rule1) * len(temp_rule2) * 4)
+
+    return rules
+
+
+def get_yyc_rule_by_index(index, need_log=False):
+    """
+    introduction: Get Yin and Yang rule of YYC by index (1536 types of rules)
+
+    :param index: rule index.
+
+    :param need_log: Show the log.
+
+    :return: YYC rule with [self.support_base, self.rule1, self.rule2].
+    """
+    rules = get_yyc_rules(need_log)
 
     if index < 0 or index >= len(rules):
         # noinspection PyProtectedMember
@@ -99,11 +105,12 @@ def _check(rule1, rule2):
 
     return True
 
+
 class YYCRule:
 
     def __init__(self, rule1, rule2, support_base, identity):
-        self.b2i = {'A': 0, 'T': 1, 'C': 2, 'G': 3}
-        self.i2b = {0: 'A', 1: 'T', 2: 'C', 3: 'G'}
+        self.b2i = {'A': 0, 'C': 1, 'G': 2, 'T': 3}
+        self.i2b = {0: 'A', 1: 'C', 2: 'G', 3: 'T'}
         self.rule1 = rule1
         self.rule2 = rule2
         self.support_base = support_base
@@ -137,4 +144,14 @@ class YYCRule:
         return one_base
 
     def get_info(self):
-        return [self.support_base, self.rule1, self.rule2]
+        return {"v": self.support_base, "yang": self.rule1, "yin": self.rule2}
+
+
+rs = get_yyc_rules(True)
+
+results = {}
+for index, r in enumerate(rs):
+    results[index + 1] = r.get_info()
+
+save_model("rules.pkl", results)
+
