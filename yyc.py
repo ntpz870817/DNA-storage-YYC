@@ -2,7 +2,8 @@
 Name: YYC (Yin-Yang DNA Storage Code)
 
 Reference:
-Ping, Z., Chen, S., Huang, X., Zhu, S., Chai, C., Zhang, H., ... & Yang, H. (2019). Towards Practical and Robust DNA-based Data Archiving by Codec System Named'Yin-Yang'. bioRxiv, 829721.
+Ping, Z., Chen, S., Huang, X., Zhu, S., Chai, C., Zhang, H., ... & Yang, H. (2019).
+Towards Practical and Robust DNA-based Data Archiving by Codec System Named Yin-Yang. bioRxiv, 829721.
 
 Coder: HaoLing ZHANG (BGI-Research)[V1]
 
@@ -24,14 +25,16 @@ import sys
 import math
 import numpy
 
-import Chamaeleo.methods.components.inherent as inherent
-import Chamaeleo.methods.components.validity as validity
-import Chamaeleo.utils.log as log
-import Chamaeleo.utils.monitor as monitor
+import utils.validity as validity
+import utils.log as log
+import utils.monitor as monitor
+
+
+base_index = {"A": 0, "C": 1, "G": 2, "T": 3}
+index_base = {0: "A", 1: "C", 2: "G", 3: "T"}
 
 
 # noinspection PyProtectedMember
-# noinspection PyBroadException,PyArgumentList,PyMethodMayBeStatic,PyTypeChecker
 class YYC:
     def __init__(
         self,
@@ -50,7 +53,7 @@ class YYC:
         :param base_reference: Correspondence between base and binary data (RULE 1).
         Make sure that Two of the bases are 1 and the other two are 0, so there are only 6 case.
 
-        :param current_code_matrix: Conversion rule between base and binary data based on support base and current base (RULE 2).
+        :param current_code_matrix: Conversion rule between base and btis based on support and current base (RULE 2).
                                      Label row is the support base, label col is the current base.
                                          A   T   C   G
                                      A   X1  Y1  X2  Y2
@@ -85,7 +88,7 @@ class YYC:
                 [1, 1, 0, 0],
             ]
         if not support_bases:
-            support_bases = [inherent.index_base.get(0)]
+            support_bases = [index_base[0]]
 
         # Assign input data to class variables
         self.base_reference = base_reference
@@ -127,7 +130,7 @@ class YYC:
             if self.base_reference[index] != 0 and self.base_reference[index] != 1:
                 log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
                            "Only 0 and 1 can be included for base reference, and base_reference[" + str(index)
-                           + "] has been detected as " + str(self.base_reference[index] + "!"))
+                           + "] has been detected as " + str(self.base_reference[index]) + "!")
         if sum(self.base_reference) != 2:
             log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
                        "Wrong correspondence between base and binary data!")
@@ -147,7 +150,7 @@ class YYC:
                     log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
                                "Only 0 and 1 can be included in the current code matrix, and the current code matrix ["
                                + str(row) + ", " + str(col) + "] has been detected as "
-                               + str(self.current_code_matrix[row][col] + "!"))
+                               + str(self.current_code_matrix[row][col]) + "!")
 
         for row in range(len(self.current_code_matrix)):
             left = self.current_code_matrix[row][positions[0]]
@@ -531,10 +534,10 @@ class YYC:
             if self.base_reference[index] == int(upper_bit):
                 current_options.append(index)
 
-        if self.current_code_matrix[inherent.base_index.get(support_base)][current_options[0]] == int(lower_bit):
-            one_base = inherent.index_base[current_options[0]]
+        if self.current_code_matrix[base_index[support_base]][current_options[0]] == int(lower_bit):
+            one_base = index_base[current_options[0]]
         else:
-            one_base = inherent.index_base[current_options[1]]
+            one_base = index_base[current_options[1]]
 
         return one_base
 
@@ -635,13 +638,14 @@ class YYC:
 
         :param current_base: The upper bit, used to identify the upper bit by RULE 1.
 
-        :param support_base: The base for support to get base in current position, one of the parameters (with current base),
-                              used to identify the lower bit by RULE 2.
+        :param support_base: The base for support to get base in current position,
+                             one of the parameters (with current base),
+                             used to identify the lower bit by RULE 2.
 
         :returns upper_bit lower_bit: The upper bit and lower bit.
                                        Type: int, int
         """
-        upper_bit = self.base_reference[inherent.base_index[current_base]]
-        lower_bit = self.current_code_matrix[inherent.base_index[support_base]][inherent.base_index[current_base]]
+        upper_bit = self.base_reference[base_index[current_base]]
+        lower_bit = self.current_code_matrix[base_index[support_base]][base_index[current_base]]
 
         return upper_bit, lower_bit

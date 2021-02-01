@@ -1,7 +1,6 @@
 import codec_factory
 import yyc
 from utils import data_handle
-from utils.rule_set import get_yyc_rule_by_index
 
 read_file_path = "./files/United Nations Flag.bmp"
 dna_path = "./output/united_nations_flag.dna"
@@ -9,7 +8,7 @@ model_path = "./output/united_nations_flag.pkl"
 write_file_path = "./output/output_united_nations_flag.jpg"
 
 if __name__ == "__main__":
-    [support_base, rule1, rule2] = get_yyc_rule_by_index(888, True)
+    [support_base, rule1, rule2] = ["A", [1, 0, 0, 1], [[0, 1, 0, 1], [1, 1, 0, 0], [1, 0, 1, 0], [0, 0, 1, 1]]]
     tool = yyc.YYC(support_bases=support_base, base_reference=rule1, current_code_matrix=rule2,
                    search_count=100, max_homopolymer=4, max_content=0.6)
     codec_factory.encode(

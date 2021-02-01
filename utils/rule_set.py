@@ -6,7 +6,7 @@ Coder: HaoLing ZHANG (BGI-Research)[V1]
 Current Version: 1
 
 Function(s): (1) Common attributes in constraint methods.
-.
+
 """
 import itertools
 import sys
@@ -14,7 +14,11 @@ import sys
 import numpy
 import utils.log as log
 import utils.monitor as monitor
-from utils.model_saver import save_model
+
+#    1: ["A", [0, 0, 1, 1], [[0, 1, 0, 1], [0, 1, 0, 1], [0, 1, 0, 1], [0, 1, 0, 1]]]
+#  496: ["A", [0, 1, 0, 1], [[1, 1, 0, 0], [1, 0, 0, 1], [1, 1, 0, 0], [1, 1, 0, 0]]]
+#  888: ["A", [1, 0, 0, 1], [[0, 1, 0, 1], [1, 1, 0, 0], [1, 0, 1, 0], [0, 0, 1, 1]]]
+# 1536: ["A", [1, 1, 0, 0], [[1, 0, 1, 0], [1, 0, 1, 0], [1, 0, 1, 0], [1, 0, 1, 0]]]
 
 
 def get_yyc_rules(need_log=False):
@@ -29,8 +33,7 @@ def get_yyc_rules(need_log=False):
         log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
                    "Find all the available Yin-Yang rules.")
 
-    count = 0
-    step = 0
+    count, step = 0, 0
     for base in ["A", "T", "C", "G"]:
         for rule1index in range(len(temp_rule1)):
             for rule2index in range(len(temp_rule2)):
@@ -48,6 +51,7 @@ def get_yyc_rules(need_log=False):
     return rules
 
 
+# noinspection PyProtectedMember
 def get_yyc_rule_by_index(index, need_log=False):
     """
     introduction: Get Yin and Yang rule of YYC by index (1536 types of rules)
@@ -61,12 +65,10 @@ def get_yyc_rule_by_index(index, need_log=False):
     rules = get_yyc_rules(need_log)
 
     if index < 0 or index >= len(rules):
-        # noinspection PyProtectedMember
         log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
                    "We have " + str(len(rules)) + " rules, index " + str(index) + " is wrong!")
 
     if need_log:
-        # noinspection PyProtectedMember
         log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),
                    "Current Rule is " + str(rules[index].get_info()) + ".")
 
@@ -145,13 +147,3 @@ class YYCRule:
 
     def get_info(self):
         return {"v": self.support_base, "yang": self.rule1, "yin": self.rule2}
-
-
-rs = get_yyc_rules(True)
-
-results = {}
-for index, r in enumerate(rs):
-    results[index + 1] = r.get_info()
-
-save_model("rules.pkl", results)
-
