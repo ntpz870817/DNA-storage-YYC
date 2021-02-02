@@ -15,6 +15,9 @@ from datetime import datetime
 class Monitor:
 
     def __init__(self):
+        """
+        introduction: Restore monitor settings.
+        """
         self.position = 0
         self.last_time = datetime.now()
 

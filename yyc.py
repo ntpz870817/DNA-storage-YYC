@@ -5,7 +5,7 @@ Reference:
 Ping, Z., Chen, S., Huang, X., Zhu, S., Chai, C., Zhang, H., ... & Yang, H. (2019).
 Towards Practical and Robust DNA-based Data Archiving by Codec System Named Yin-Yang. bioRxiv, 829721.
 
-Coder: HaoLing ZHANG (BGI-Research)[V1]
+Coder: HaoLing ZHANG (BGI-Research)[V2], ShiHong Chen (BGI-Research)[V2]
 
 Current Version: 1
 
@@ -43,9 +43,10 @@ class YYC:
         support_bases=None,
         support_spacing=0,
         max_ratio=0.8,
-        search_count=2,
+        search_count=100,
         max_homopolymer=math.inf,
-        max_content=1
+        max_content=1,
+        min_free_energy=None
     ):
         """
         introduction: The initialization method of YYC.
@@ -75,6 +76,8 @@ class YYC:
         :param max_homopolymer: maximum length of homopolymer.
 
         :param max_content: maximum content of C and G, which means GC content is in [1 - max_content, max_content].
+
+        :param min_free_energy: the free energy of DNA sequence is lower than required min free energy.
         """
 
         # Set default values for Rules 1 and 2 (RULE 495)
@@ -100,6 +103,7 @@ class YYC:
 
         self.max_homopolymer = max_homopolymer
         self.max_content = max_content
+        self.min_free_energy = min_free_energy
 
         # Detect parameters correctness
         self._init_check()
@@ -390,13 +394,15 @@ class YYC:
                 n_dna, _ = self._list_to_sequence(fixed_list, another_list)
                 if validity.check("".join(n_dna),
                                   max_homopolymer=self.max_homopolymer,
-                                  max_content=self.max_content):
+                                  max_content=self.max_content,
+                                  min_free_energy=self.min_free_energy):
                     return another_list, True, search_index
 
                 c_dna, _ = self._list_to_sequence(another_list, fixed_list)
                 if validity.check("".join(c_dna),
                                   max_homopolymer=self.max_homopolymer,
-                                  max_content=self.max_content):
+                                  max_content=self.max_content,
+                                  min_free_energy=self.min_free_energy):
 
                     return another_list, False, search_index
 
@@ -488,7 +494,9 @@ class YYC:
                 for chosen_bit in [0, 1]:
                     current_base = self._binary_to_base(chosen_bit, lower_bit, support_base)
                     if validity.check("".join(dna_sequence) + current_base,
-                                      max_homopolymer=self.max_homopolymer, max_content=self.max_content):
+                                      max_homopolymer=self.max_homopolymer,
+                                      max_content=self.max_content,
+                                      min_free_energy=self.min_free_energy):
                         re_upper_list[index] = chosen_bit
                         dna_sequence.append(current_base)
                         is_chosen = True
@@ -500,7 +508,9 @@ class YYC:
                 for chosen_bit in [0, 1]:
                     current_base = self._binary_to_base(upper_bit, chosen_bit, support_base)
                     if validity.check("".join(dna_sequence) + current_base,
-                                      max_homopolymer=self.max_homopolymer, max_content=self.max_content):
+                                      max_homopolymer=self.max_homopolymer,
+                                      max_content=self.max_content,
+                                      min_free_energy=self.min_free_energy):
                         re_lower_list[index] = chosen_bit
                         dna_sequence.append(current_base)
                         is_chosen = True
