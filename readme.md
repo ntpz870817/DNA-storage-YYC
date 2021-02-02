@@ -77,6 +77,6 @@ codec_factory.decode(input_path="C:\\target.dna", output_path="C:\\target.jpg", 
 
 If you think this repo helps or being used in your research, please consider refer this paper.
 
-[Towards Practical and Robust DNA-based Data Archiving by Codec System Named 'Yin-Yang'](https://www.biorxiv.org/content/10.1101/829721v2)
+[Towards Practical and Robust DNA-based Data Archiving by Codec System Named Yin-Yang](https://www.biorxiv.org/content/10.1101/829721v2)
 
 Thank you!

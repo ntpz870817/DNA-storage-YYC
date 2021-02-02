@@ -114,7 +114,7 @@ def decode(method=None, model_path=None, input_path=None, output_path=None,
             log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
                        "The input file path is not valid!")
 
-        if output_path is None or len(input_path) == 0:
+        if output_path is None or len(output_path) == 0:
             log.output(log.ERROR, str(__name__), str(sys._getframe().f_code.co_name),
                        "The output file path is not valid!")
 
