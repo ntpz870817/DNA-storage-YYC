@@ -114,7 +114,7 @@ def write_all_from_binary(path, matrix, size, need_log=False):
                     temp_byte *= 2
                     temp_byte += matrix[row][col]
                     if bit_index == 8:
-                        if size >= 0:
+                        if size > 0:
                             file.write(struct.pack("B", int(temp_byte)))
                             bit_index = 0
                             temp_byte = 0
