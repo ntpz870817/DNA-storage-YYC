@@ -403,10 +403,25 @@ class YYC:
                                   max_homopolymer=self.max_homopolymer,
                                   max_content=self.max_content,
                                   min_free_energy=self.min_free_energy):
-
                     return another_list, False, search_index
-
         while True:
+            # generate random sequence directly
+            # random_list = [random.randint(0, 1) for _ in range(len(fixed_list))]
+            #
+            # n_dna, _ = self._list_to_sequence(fixed_list, random_list)
+            # if validity.check("".join(n_dna),
+            #                   max_homopolymer=self.max_homopolymer,
+            #                   max_content=self.max_content,
+            #                   min_free_energy=self.min_free_energy):
+            #     return random_list, True, -1
+            #
+            # c_dna, _ = self._list_to_sequence(random_list, fixed_list)
+            # if validity.check("".join(c_dna),
+            #                   max_homopolymer=self.max_homopolymer,
+            #                   max_content=self.max_content,
+            #                   min_free_energy=self.min_free_energy):
+            #     return random_list, False, -1
+
             # insert at least 2 interval
             random_index = random.randint(total_count + 3, math.pow(2, index_length) - 1)
             index_list = list(map(int, list(str(bin(random_index))[2:].zfill(index_length))))
