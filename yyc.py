@@ -420,7 +420,7 @@ class YYC:
             #                   max_homopolymer=self.max_homopolymer,
             #                   max_content=self.max_content,
             #                   min_free_energy=self.min_free_energy):
-            #     return random_list, False, -1
+            #     return random_list, True, -1
 
             # insert at least 2 interval
             random_index = random.randint(total_count + 3, math.pow(2, index_length) - 1)
@@ -432,7 +432,7 @@ class YYC:
 
             c_dna, random_list = self._list_to_sequence(index_list, fixed_list)
             if c_dna is not None:
-                return random_list, False, -1
+                return random_list, True, -1
 
     def _synthesis_sequences(self, data_set, need_log):
         """
