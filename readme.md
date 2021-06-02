@@ -38,8 +38,8 @@ In addition, the packages we are calling now is as follows:
 │    │    ├── model_saver.py          // Save model to file and load model from file
 │    │    ├── monitor.py              // Get the progress situation and the time left
 │    │    ├── validity.py             // Determining whether a DNA sequence is easy or not for sequencing and synthesis
-│    ├── pipeline.py                   // Main calling function
-│    ├── scheme.py                     // YYC (Yin-Yang DNA Storage Code)
+│    ├── pipeline.py                  // Main calling function
+│    ├── scheme.py                    // YYC (Yin-Yang DNA Storage Code)
 ├── README.md                         // Description document of kit
 ```
 
