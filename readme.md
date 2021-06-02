@@ -4,7 +4,9 @@
 
 ---
 
-**YYC** is a DNA storage codec algorithm developed by BGI-research. Briefly, it can transcode two binary sequences into one DNA sequence. This algorithm can help to achieve a high-density, high-feasibility DNA storage based on DNA synthesis.
+**YYC** is a DNA storage codec algorithm developed by BGI-research.
+Briefly, it can transcode two binary sequences into one DNA sequence.
+This algorithm can help to achieve a high-density, high-feasibility DNA storage based on DNA synthesis.
 
 ## Environment Configuration
 The kit is developed by **Python3.5**.
@@ -28,55 +30,60 @@ In addition, the packages we are calling now is as follows:
 │    ├── output                       // Generated files from handle
 │    ├── test_mona_lisa.py            // Run YYC using Mona Lisa.jpg
 │    ├── test_united_nations_flag.py  // Run YYC using United Nations Flag.bmp
-├── utils                             // Util module
-│    ├── data_handle.py               // Conversion of DNA motifs and binary document
-│    ├── index_operator.py            // Processing the relationship between index and data
-│    ├── log.py                       // Output the logs in console
-│    ├── model_saver.py               // Save model to file and load model from file
-│    ├── monitor.py                   // Get the progress situation and the time left
-│    ├── validity.py                  // Determining whether a DNA sequence is easy or not for sequencing and synthesis
-├── codec_factory.py                  // Main calling function
-├── yyc.py                            // YYC (Yin-Yang DNA Storage Code)
+├── yyc
+│    ├── utils                        // Util module
+│    │    ├── data_handle.py          // Conversion of DNA motifs and binary document
+│    │    ├── index_operator.py       // Processing the relationship between index and data
+│    │    ├── log.py                  // Output the logs in console
+│    │    ├── model_saver.py          // Save model to file and load model from file
+│    │    ├── monitor.py              // Get the progress situation and the time left
+│    │    ├── validity.py             // Determining whether a DNA sequence is easy or not for sequencing and synthesis
+│    ├── pipeline.py                   // Main calling function
+│    ├── scheme.py                     // YYC (Yin-Yang DNA Storage Code)
 ├── README.md                         // Description document of kit
 ```
 
 ## Introduction of Yin-Yang Code
 Yin-Yang Code is the algorithm describes the collection of derivative rules reported by Ping et. al.
-When user need to customize YYC transcoding process, an example of command could be:
 
+The users could install this package by 'pip install yyc'.
+When you have finished installing the package, the sample program in folder /examples/ could be run to make sure the package is correct.
+
+We strongly suggest using Python IDE (such as PyCharm) to complete your transcoding task, please see the examples [here](https://github.com/ntpz870817/DNA-storage-YYC/tree/master/examples).
+The command line is relatively long and hard to customize, for example:
+
+In the encoding process
 ```python
-
-yyc.YYC(base_reference=[0, 0, 1, 1], current_code_matrix=[[0, 1, 0, 1],[0, 1, 0, 1],[0, 1, 0, 1],[0, 1, 0, 1]],
-		support_bases="A", support_spacing=0, max_ratio=0.7, search_count=20)
+python
+>>> from yyc import pipeline
+>>> from yyc import scheme
+>>> pipeline.encode(method=scheme.YYC(support_bases="A", base_reference=[0, 1, 0, 1], current_code_matrix=[[1, 1, 0, 0], [1, 0, 0, 1], [1, 1, 0, 0], [1, 1, 0, 0]], search_count=100, max_homopolymer=4, max_content=0.6), input_path="./files/Mona Lisa.jpg", output_path="./output/mona_lisa.dna", model_path="./output/yyc.pkl", need_index=True, need_log=True)
 ```
 
-## Method of Application
-In the encoding process, we first instantiate the method, and then pass the method and the necessary path into **codec_factory**.
-
-The specific usage is as follows:
-
+In the decoding process
 ```python
-import yyc, codec_factory
-
-method = yyc.YYC()
-
-codec_factory.encode(method, input_path="C:\\Mona Lisa.jpg", output_path="C:\\target.dna", model_path="C:\\yyc.pkl")
+python
+>>> from yyc import pipeline
+>>> from yyc import scheme
+>>> pipeline.decode(model_path="./output/yyc.pkl",input_path="./output/mona_lisa.dna", output_path="./output/output_mona_lisa.jpg", has_index=True, need_log=True)
 ```
 
-In the decoding process, we first instantiate the method (using path of model file), and then pass the method and the necessary path into **entry**.
 
-The specific usage (using init method) is as follows:
-
-```python
-import codec_factory
-
-codec_factory.decode(input_path="C:\\target.dna", output_path="C:\\target.jpg", model_path="C:\\yyc.pkl")
-```
-
-## Cite
+## Citing
 
 If you think this repo helps or being used in your research, please consider refer this paper.
 
 [Towards Practical and Robust DNA-based Data Archiving by Codec System Named Yin-Yang](https://www.biorxiv.org/content/10.1101/829721v2)
+
+````
+@article{ping2020towards,
+  title={Towards Practical and Robust DNA-based Data Archiving by Codec System Named'Yin-Yang'},
+  author={Ping, Zhi and Chen, Shihong and Zhou, Guangyu and Huang, Xiaoluo and Zhu, Sha and Chai, Chen and Zhang, Haoling and Lee, Henry H and Chiu, Tsan-Yu and Chen, Tai and others},
+  journal={bioRxiv},
+  pages={829721},
+  year={2020},
+  publisher={Cold Spring Harbor Laboratory}
+}
+````
 
 Thank you!

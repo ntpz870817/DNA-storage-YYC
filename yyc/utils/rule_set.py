@@ -12,8 +12,9 @@ import itertools
 import sys
 
 import numpy
-import utils.log as log
-import utils.monitor as monitor
+import yyc.utils.log as log
+from yyc.utils.monitor import Monitor
+
 
 #    1: ["A", [0, 0, 1, 1], [[0, 1, 0, 1], [0, 1, 0, 1], [0, 1, 0, 1], [0, 1, 0, 1]]]
 #  496: ["A", [0, 1, 0, 1], [[1, 1, 0, 0], [1, 0, 0, 1], [1, 1, 0, 0], [1, 1, 0, 0]]]
@@ -26,7 +27,7 @@ def get_yyc_rules(need_log=False):
     temp_rule1 = ["".join(x) for x in itertools.product("01", repeat=4)]
     temp_rule2 = ["".join(x) for x in itertools.product("01", repeat=16)]
 
-    m = monitor.Monitor()
+    m = Monitor()
 
     if need_log:
         # noinspection PyProtectedMember

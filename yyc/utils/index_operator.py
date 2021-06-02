@@ -11,8 +11,9 @@ Function(s): (1) Integrate index (to binary) to binary data, one or all.
 """
 import sys
 
-import utils.monitor as monitor
-import utils.log as log
+
+import yyc.utils.log as log
+from yyc.utils.monitor import Monitor
 
 
 # noinspection PyProtectedMember
@@ -28,7 +29,7 @@ def connect_all(matrix, need_log=False):
     :return new_matrix: Data for output.
                         Type: Two-dimensional list(int).
     """
-    m = monitor.Monitor()
+    m = Monitor()
     index_binary_length = int(len(str(bin(len(matrix)))) - 2)
 
     if need_log:
@@ -83,7 +84,7 @@ def divide_all(matrix, need_log=False):
     :returns index, datas: Obtained data sets and index sets in corresponding locations.
                             Type: One-dimensional list(int), Two-dimensional list(int).
     """
-    m = monitor.Monitor()
+    m = Monitor()
     index_binary_length = int(len(str(bin(len(matrix)))) - 2)
 
     if need_log:
@@ -141,7 +142,7 @@ def sort_order(indexes, data_set, need_log=False):
     :returns matrix: Binary list in correct order.
                       Type: Two-dimensional list(int).
     """
-    m = monitor.Monitor()
+    m = Monitor()
 
     if need_log:
         log.output(log.NORMAL, str(__name__), str(sys._getframe().f_code.co_name),

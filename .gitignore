@@ -11,3 +11,7 @@ __pycache__/
 
 examples/output/*
 !examples/output/note.md
+
+dist/
+build/
+yyc.egg-info/

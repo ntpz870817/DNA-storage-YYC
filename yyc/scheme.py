@@ -24,10 +24,8 @@ import sys
 
 import math
 import numpy
-
-import utils.validity as validity
-import utils.log as log
-import utils.monitor as monitor
+from yyc.utils import log, validity
+from yyc.utils.monitor import Monitor
 
 
 base_index = {"A": 0, "C": 1, "G": 2, "T": 3}
@@ -109,7 +107,7 @@ class YYC:
         self._init_check()
 
         self.file_size = 0
-        self.monitor = monitor.Monitor()
+        self.monitor = Monitor()
 
     def _init_check(self):
         """

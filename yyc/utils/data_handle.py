@@ -14,8 +14,8 @@ import math
 import sys
 import os
 
-import utils.log as log
-import utils.monitor as monitor
+import yyc.utils.log as log
+from yyc.utils.monitor import Monitor
 
 
 # noinspection PyProtectedMember
@@ -36,7 +36,7 @@ def read_binary_from_all(path, segment_length=120, need_log=False):
                     Type: two-dimensional list(int)
     """
 
-    m = monitor.Monitor()
+    m = Monitor()
     try:
 
         # Open selected file
@@ -95,7 +95,7 @@ def write_all_from_binary(path, matrix, size, need_log=False):
 
     :param need_log: choose to output log file or not.
     """
-    m = monitor.Monitor()
+    m = Monitor()
 
     try:
         with open(path, "wb+") as file:
@@ -138,7 +138,7 @@ def read_dna_file(path, need_log=False):
     :param need_log: need output log.
     """
 
-    m = monitor.Monitor()
+    m = Monitor()
 
     dna_sequences = []
 
@@ -176,7 +176,7 @@ def write_dna_file(path, dna_sequences, need_log=False):
     :param need_log: choose to output log file or not.
     """
 
-    m = monitor.Monitor()
+    m = Monitor()
 
     try:
         with open(path, "w") as file:

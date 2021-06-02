@@ -10,11 +10,7 @@ Function(s): After initializing the encoding or decoding method,
              by the entry function.
 """
 import sys
-
-import utils.model_saver as saver
-import utils.data_handle as data_handle
-import utils.log as log
-import utils.index_operator as index_operator
+from yyc.utils import log, data_handle, index_operator, model_saver
 
 
 # noinspection PyProtectedMember
@@ -69,7 +65,7 @@ def encode(method, input_path, output_path,
     dna_sequences = method.encode(input_matrix, size, need_log)
 
     if model_path is not None:
-        saver.save_model(model_path, {"method": method, "verify": verify})
+        model_saver.save_model(model_path, {"method": method, "verify": verify})
 
     data_handle.write_dna_file(output_path, dna_sequences, need_log)
 
@@ -119,7 +115,7 @@ def decode(method=None, model_path=None, input_path=None, output_path=None,
                        "The output file path is not valid!")
 
         if model_path is not None:
-            model = saver.load_model(model_path)
+            model = model_saver.load_model(model_path)
             method = model.get("method")
             verify = model.get("verify")
 

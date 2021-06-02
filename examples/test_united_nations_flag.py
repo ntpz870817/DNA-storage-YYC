@@ -1,6 +1,6 @@
-import codec_factory
-import yyc
-from utils import data_handle
+from yyc import pipeline
+from yyc import scheme
+from yyc.utils import data_handle
 
 read_file_path = "./files/United Nations Flag.bmp"
 dna_path = "./output/united_nations_flag.dna"
@@ -9,9 +9,9 @@ write_file_path = "./output/output_united_nations_flag.jpg"
 
 if __name__ == "__main__":
     [support_base, rule1, rule2] = ["A", [1, 0, 0, 1], [[0, 1, 0, 1], [1, 1, 0, 0], [1, 0, 1, 0], [0, 0, 1, 1]]]
-    tool = yyc.YYC(support_bases=support_base, base_reference=rule1, current_code_matrix=rule2,
-                   search_count=100, max_homopolymer=4, max_content=0.6)
-    codec_factory.encode(
+    tool = scheme.YYC(support_bases=support_base, base_reference=rule1, current_code_matrix=rule2,
+                      search_count=100, max_homopolymer=4, max_content=0.6)
+    pipeline.encode(
         method=tool,
         input_path=read_file_path,
         output_path=dna_path,
@@ -20,7 +20,7 @@ if __name__ == "__main__":
         need_log=True
     )
     del tool
-    codec_factory.decode(
+    pipeline.decode(
         model_path=model_path,
         input_path=dna_path,
         output_path=write_file_path,
