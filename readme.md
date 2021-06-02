@@ -47,7 +47,7 @@ In addition, the packages we are calling now is as follows:
 Yin-Yang Code is the algorithm describes the collection of derivative rules reported by Ping et. al.
 
 The users could install this package by 'pip install yyc'.
-When you have finished installing the package, the sample program in folder /examples/ could be run to make sure the package is correct.
+When you have finished installing the package, the sample program in [folder](https://github.com/ntpz870817/DNA-storage-YYC/tree/master/examples) could be run to make sure the package is correct.
 
 We strongly suggest using Python IDE (such as PyCharm) to complete your transcoding task, please see the examples [here](https://github.com/ntpz870817/DNA-storage-YYC/tree/master/examples).
 The command line is relatively long and hard to customize, for example:
@@ -64,7 +64,6 @@ In the decoding process
 ```python
 python
 >>> from yyc import pipeline
->>> from yyc import scheme
 >>> pipeline.decode(model_path="./output/yyc.pkl",input_path="./output/mona_lisa.dna", output_path="./output/output_mona_lisa.jpg", has_index=True, need_log=True)
 ```
 
