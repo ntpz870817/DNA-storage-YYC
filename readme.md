@@ -75,13 +75,15 @@ If you think this repo helps or being used in your research, please consider ref
 [Towards Practical and Robust DNA-based Data Archiving by Codec System Named Yin-Yang](https://www.biorxiv.org/content/10.1101/829721v2)
 
 ````
-@article{ping2020towards,
-  title={Towards Practical and Robust DNA-based Data Archiving by Codec System Named'Yin-Yang'},
-  author={Ping, Zhi and Chen, Shihong and Zhou, Guangyu and Huang, Xiaoluo and Zhu, Sha and Chai, Chen and Zhang, Haoling and Lee, Henry H and Chiu, Tsan-Yu and Chen, Tai and others},
-  journal={bioRxiv},
-  pages={829721},
-  year={2020},
-  publisher={Cold Spring Harbor Laboratory}
+@article{ping2022towards,
+  title={Towards practical and robust DNA-based data archiving using the yin--yang codec system},
+  author={Ping, Zhi and Chen, Shihong and Zhou, Guangyu and Huang, Xiaoluo and Zhu, Sha Joe and Zhang, Haoling and Lee, Henry H and Lan, Zhaojun and Cui, Jie and Chen, Tai and others},
+  journal={Nature Computational Science},
+  pages={234--242},
+  year={2022},
+  volume={2},
+  number={4},
+  publisher={Nature Publishing Group}
 }
 ````
 
