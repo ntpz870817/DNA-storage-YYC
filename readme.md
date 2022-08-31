@@ -72,7 +72,7 @@ python
 
 If you think this repo helps or being used in your research, please consider refer this paper.
 
-[Towards Practical and Robust DNA-based Data Archiving by Codec System Named Yin-Yang](https://www.biorxiv.org/content/10.1101/829721v2)
+[Towards practical and robust DNA-based data archiving using the yin--yang codec system](https://www.nature.com/articles/s43588-022-00231-2)
 
 ````
 @article{ping2022towards,
