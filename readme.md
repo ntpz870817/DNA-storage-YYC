@@ -8,6 +8,10 @@
 Briefly, it can transcode two binary sequences into one DNA sequence.
 This algorithm can help to achieve a high-density, high-feasibility DNA storage based on DNA synthesis.
 
+Prior to utilizing this repository, we kindly request that you possess a fundamental comprehension of DNA-based data storage. 
+An inappropriate communication case can be seen [here](https://github.com/ntpz870817/DNA-storage-YYC/issues/4) for reference. 
+Should you have any inquiries, please don't hesitate to reach out to us via either [Dr. Ping Zhi](pingzhi@genomics.cn), [Mr. Haoling Zhang](zhanghaoling@genomics.cn) or [Dr. Yue Shen](shenyue@genomics.cn).
+
 ## Environment Configuration
 The kit is developed by **Python3.5**.
 
